@@ -1,16 +1,31 @@
-# habited
+# Habit Tracker
+A simple app for tracking daily habits built with Flutter.
 
-A new Flutter project.
+### Features
+- Add new habits to track
+- Mark habits as complete for the day
+- View progress for each habit over time
+- Set reminders for habits
 
-## Getting Started
+### Todo
+- [ ] user home screen UI
+- [ ] habit detail side panel
+- [ ] habit recording and animations
+- [ ] login and registration UI
+- [ ] login and registration firebase + logic
 
-This project is a starting point for a Flutter application.
+### Installing Project
+```sh
+git clone https://github.com/mannnish/habit.ed
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+### Dependencies
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Contributions
+All contributions are welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.
+
+### License
+This project is licensed under the MIT License - see the LICENSE file for details.
