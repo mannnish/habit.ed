@@ -8,9 +8,9 @@ A simple app for tracking daily habits built with Flutter.
 - Set reminders for habits
 
 ### Todo
-- [ ] user home screen UI
-- [ ] habit detail side panel
-- [ ] habit recording and animations
+- [x] user home screen UI
+- [x] habit detail side panel
+- [x] habit model and working
 - [ ] login and registration UI
 - [ ] login and registration firebase + logic
 
