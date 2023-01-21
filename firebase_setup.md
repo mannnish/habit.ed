@@ -10,36 +10,20 @@
         - add sdks in gradle files
     - add dependencies
         ```yaml
-            firebase_core: 1.19.1
-            firebase_core_web: 1.6.6
-            firebase_auth: 3.4.1
-            google_sign_in: ^5.3.3
-            firebase_core_platform_interface: 4.5.1
-            # cloud_firestore:
+        # dart -> 2.16.1
+        # flutter -> 2.10.2 
+        cloud_firestore: 3.5.1
+        cloud_firestore_web: 2.8.10
+        cloud_firestore_platform_interface: 5.7.7
+        firebase_auth: 3.4.2
+        firebase_core: 1.24.0
+        firebase_core_web: 1.7.3
+        firebase_core_platform_interface: 4.5.1
+        google_sign_in: 5.4.3
+        shared_preferences: 2.0.17
         ```
     - `WidgetsFlutterBinding.ensureInitialized(); && await Firebase.initializeApp();` in main.dart
     - write sign in and sign out methods in [auth.repo.dart](lib/utils/auth.repo.dart)
-        ```dart
-        static Future<gsignin.GoogleSignInAccount?> signIn() async {
-            try {
-            final googleSignIn = gsignin.GoogleSignIn( scopes: <String>['email'] );
-            final gsignin.GoogleSignInAccount? gsiAccountUser = await googleSignIn.signIn();
-            if (gsiAccountUser == null) return null;
-                return gsiAccountUser;
-            } catch (e) {
-                throw ("error static Future<gsignin.GoogleSignInAccount?> signIn() : $e");
-            }
-        }
-
-        static Future<void> signOut() async {
-            try {
-            final googleSignIn = gsignin.GoogleSignIn();
-            await googleSignIn.signOut();
-            } catch (e) {
-                throw ("error static Future<void> signOut() : $e");
-            }
-        }
-        ```
 2. __for web auth setup__
     - add web app in firebase and name it "<project> web app"
     - copy the cdn code and paste it in web/index.html
@@ -55,7 +39,8 @@
         ```dart
         void main() async {
             WidgetsFlutterBinding.ensureInitialized();
-            // to avoid duplicate app name exists error
+            // to avoid duplicate app name exists error - 
+            // in earlier versions we used to initiliaze firebase in web.html
             if (kIsWeb) {
                 await Firebase.initializeApp(options: const FirebaseOptions(...));
             } else {
