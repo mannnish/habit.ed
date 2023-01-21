@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Fl-Moto",
+            "request": "launch",
+            "type": "dart",
+            // "args" : ["-d", "ZF6526KVB4"]
+        },
+        {
+            "name": "Fl-Chrome-1",
+            "request": "launch",
+            "type": "dart",
+            "args": ["-d", "chrome", "--web-port","59688"]
+        },
+        {
+            "name": "Fl-Chrome-2",
+            "request": "launch",
+            "type": "dart",
+            "args": ["-d", "chrome", "--web-port","5000"]
+        }
+    ]
+}

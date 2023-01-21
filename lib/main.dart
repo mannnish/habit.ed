@@ -1,8 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:habited/views/login_screen.dart';
-import 'views/home.dart';
+// import 'views/home.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyBTbX0sllcrMRqv0LL7IperWEFdSyRrWqY",
+          authDomain: "habit-ed.firebaseapp.com",
+          projectId: "habit-ed",
+          storageBucket: "habit-ed.appspot.com",
+          messagingSenderId: "691675216102",
+          appId: "1:691675216102:web:33fcabbca8936a4ce96327"),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   runApp(const MyApp());
 }
 

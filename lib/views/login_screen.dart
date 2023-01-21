@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habited/utils/appcolors.dart';
+import 'package:habited/utils/auth.repo.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -9,8 +10,13 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: InkWell(
-          onTap: () {
-            //
+          onTap: () async {
+            try {
+              await AuthRepo.signIn();
+            } catch (e) {
+              // ignore: avoid_print
+              print(e);
+            }
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

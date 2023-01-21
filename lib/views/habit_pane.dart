@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habited/models/habit.model.dart';
 import 'package:habited/utils/appcolors.dart';
 import 'package:habited/utils/appconfig.dart';
 import 'package:habited/utils/dummy.data.dart';

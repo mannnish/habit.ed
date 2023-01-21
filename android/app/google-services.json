@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "691675216102",
+    "project_id": "habit-ed",
+    "storage_bucket": "habit-ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691675216102:android:5105cf2e0d4577cae96327",
+        "android_client_info": {
+          "package_name": "com.todd.habited"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691675216102-t3hsmv9ae3lnc02ncn9dfv3qsq4brd5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.todd.habited",
+            "certificate_hash": "236f6fd572f2d9c7307ad98ff9073d9736607063"
+          }
+        },
+        {
+          "client_id": "691675216102-rn949cv6802m64ok80jtc1cl13mtohf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyBUdo5ZMzLduS1J1i4K4e0v6_k-v4Rg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691675216102-l4mir11k9v1arduung30fh2i3ahsltbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
