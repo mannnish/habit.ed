@@ -8,6 +8,7 @@
     - create a new android app in firebase and follow the steps
         - download google-services.json and paste it in android/app folder
         - add sdks in gradle files
+    - change gradle file dedfault config to `minSdkVersion 29 & targetSdkVersion 31`
     - add dependencies
         ```yaml
         # dart -> 2.16.1

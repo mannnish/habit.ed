@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 
 class HabitModel {
   late String title;
-  late String icon;
+  // late String icon;
   late Color color;
   late bool isBad;
-  late String quoteToSelf;
+  // late String quoteToSelf;
   late List<IntervalModel> intervals;
 
   bool isInRange(DateTime date) {
@@ -75,10 +75,10 @@ class HabitModel {
 
   HabitModel({
     required this.title,
-    required this.icon,
+    // required this.icon,
     required this.color,
     required this.isBad,
-    required this.quoteToSelf,
+    // required this.quoteToSelf,
     required this.intervals,
   }) {
     sortAndMergeInterval();
@@ -86,10 +86,10 @@ class HabitModel {
 
   HabitModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
-    icon = json['icon'];
+    // icon = json['icon'];
     color = Color(json['color']);
     isBad = json['isBad'] ?? false;
-    quoteToSelf = json['quoteToSelf'] ?? '';
+    // quoteToSelf = json['quoteToSelf'] ?? '';
     if (json['intervals'] != null) {
       intervals = <IntervalModel>[];
       json['intervals'].forEach((v) {
@@ -102,10 +102,10 @@ class HabitModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['title'] = title;
-    data['icon'] = icon;
+    // data['icon'] = icon;
     data['color'] = color.value.toString();
     data['isBad'] = isBad;
-    data['quoteToSelf'] = quoteToSelf;
+    // data['quoteToSelf'] = quoteToSelf;
     if (intervals.isNotEmpty) {
       data['intervals'] = intervals.map((v) => v.toJson()).toList();
     }

@@ -6,10 +6,10 @@ class DummyData {
   static List<HabitModel> habits = [
     HabitModel(
       title: 'Go Gym',
-      icon: '',
+      // icon: '',
       color: AppColors.Blue,
       isBad: false,
-      quoteToSelf: 'No intervals',
+      // quoteToSelf: 'No intervals',
       intervals: [
         IntervalModel(
           startDate: DateTime(2023, 1, 1),
@@ -19,10 +19,10 @@ class DummyData {
     ),
     HabitModel(
       title: 'Go College',
-      icon: '',
+      // icon: '',
       color: AppColors.Orange,
       isBad: false,
-      quoteToSelf: 'intervals, but no ongoing streak',
+      // quoteToSelf: 'intervals, but no ongoing streak',
       intervals: [
         // dummy data of intervalModels
         IntervalModel(
@@ -41,10 +41,10 @@ class DummyData {
     ),
     HabitModel(
       title: 'Leetcode Daily',
-      icon: '',
+      // icon: '',
       color: AppColors.Green,
       isBad: false,
-      quoteToSelf: 'intervals, and ongoing streak',
+      // quoteToSelf: 'intervals, and ongoing streak',
       intervals: [
         IntervalModel(
           startDate: DateTime(2023, 1, 4),
