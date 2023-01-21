@@ -8,15 +8,18 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Row(
-          children: const [
-            // 1-2--3---
-            Expanded(child: UserPane(), flex: 1),
-            Expanded(child: HabitPane(), flex: 5),
-          ],
+    return WillPopScope(
+      onWillPop: () async => Future<bool>.value(false),
+      child: Scaffold(
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Row(
+            children: const [
+              // 1-2--3---
+              Expanded(child: UserPane(), flex: 1),
+              Expanded(child: HabitPane(), flex: 5),
+            ],
+          ),
         ),
       ),
     );

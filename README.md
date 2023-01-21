@@ -12,18 +12,17 @@ A simple app for tracking daily habits built with Flutter.
 - [x] habit detail side panel
 - [x] habit model and working
 - [x] login UI
-- [ ] login and registration firebase + logic
+- [x] login and registration firebase + logic
 - [ ] firestore logic
 
-### Installing Project
+### Version & Installing Project
+- flutter version : 2.10.2
+- dart version : 2.16.1
 ```sh
 git clone https://github.com/mannnish/habit.ed
 flutter pub get
 flutter run
 ```
-
-### Dependencies
-
 
 ### Contributions
 All contributions are welcome! If you find a bug or have an idea for a new feature, please open an issue or submit a pull request.

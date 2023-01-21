@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habited/models/user.model.dart';
 import 'package:habited/utils/appcolors.dart';
+import 'package:habited/utils/auth.repo.dart';
 
 class UserPane extends StatefulWidget {
   const UserPane({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class _UserPaneState extends State<UserPane> {
   Color unselectedHoverFrontColor = Colors.black;
   Color unselectedBackColor = Colors.transparent;
 
-  Widget singleButton(int i, {IconData? icon, String? text}) {
+  Widget singleButton(int i, var callback, {IconData? icon, String? text}) {
     return Container(
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
@@ -28,7 +30,10 @@ class _UserPaneState extends State<UserPane> {
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: InkWell(
-        onTap: () => setState(() => selectedIndex = i),
+        onTap: () {
+          setState(() => selectedIndex = i);
+          callback();
+        },
         onHover: (value) {
           if (value && selectedIndex != i) {
             setState(() => hoveredIndex = i);
@@ -68,12 +73,7 @@ class _UserPaneState extends State<UserPane> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
-        color: AppColors.LightGray,
-        // border: Border.fromBorderSide(
-        //   BorderSide(color: AppColors.DarkGrayBorder, width: 0.3),
-        // ),
-      ),
+      decoration: const BoxDecoration(color: AppColors.LightGray),
       child: Column(
         children: [
           // flutter user left pane UI
@@ -88,27 +88,34 @@ class _UserPaneState extends State<UserPane> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 13,
                   backgroundColor: AppColors.Red,
+                  foregroundImage: NetworkImage(UserModel.photoUrl),
                 ),
                 SizedBox(width: padding),
-                const Text(
-                  'Manish Kumar',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  UserModel.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 20),
-          singleButton(0, icon: CupertinoIcons.rectangle_stack, text: 'All Habits'),
-          singleButton(1, icon: Icons.radio_button_unchecked, text: 'Pending'),
-          singleButton(2, icon: Icons.settings, text: 'Settings'),
+          singleButton(0, () {}, icon: CupertinoIcons.rectangle_stack, text: 'All Habits'),
+          singleButton(1, () {}, icon: Icons.radio_button_unchecked, text: 'Pending'),
+          singleButton(2, () {}, icon: Icons.settings, text: 'Settings'),
           const Spacer(),
           const Divider(color: AppColors.DarkGrayBorder, thickness: 0.2),
           const SizedBox(height: 2),
-          singleButton(3, icon: Icons.format_quote_rounded, text: 'Have an Issue'),
-          singleButton(4, icon: Icons.logout, text: 'Logout'),
+          singleButton(3, () {}, icon: Icons.format_quote_rounded, text: 'Have an Issue'),
+          singleButton(4, () async {
+            await AuthRepo.signOut(context);
+          }, icon: Icons.logout, text: 'Logout'),
+          Text(
+            UserModel.uid,
+            style: const TextStyle(fontSize: 11),
+          )
         ],
       ),
     );
