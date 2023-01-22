@@ -3,7 +3,7 @@ import 'package:habited/models/user.model.dart';
 import 'package:habited/views/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'home.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -26,20 +26,12 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
     } else {
       await UserModel.fromPrefs();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: 30,
-          height: 30,
-          child: CircularProgressIndicator(),
-        ),
-      ),
-    );
+    return const Scaffold();
   }
 }

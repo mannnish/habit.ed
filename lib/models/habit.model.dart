@@ -11,6 +11,51 @@ class HabitModel {
   // late String quoteToSelf;
   late List<IntervalModel> intervals;
 
+  HabitModel({
+    required this.title,
+    // required this.icon,
+    required this.color,
+    required this.isBad,
+    // required this.quoteToSelf,
+    required this.intervals,
+  }) {
+    sortAndMergeInterval();
+  }
+
+  HabitModel.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    // icon = json['icon'];
+    if (json['color'] == null) {
+      color = Colors.blue;
+    } else {
+      color = Color(int.tryParse(json['color']) ?? Colors.blue.value);
+    }
+    isBad = json['isBad'] ?? false;
+    // quoteToSelf = json['quoteToSelf'] ?? '';
+    if (json['intervals'] != null) {
+      intervals = <IntervalModel>[];
+      json['intervals'].forEach((v) {
+        intervals.add(IntervalModel.fromJson(v));
+      });
+    } else {
+      intervals = <IntervalModel>[];
+    }
+    sortAndMergeInterval();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    // data['icon'] = icon;
+    data['color'] = color.value.toString();
+    data['isBad'] = isBad;
+    // data['quoteToSelf'] = quoteToSelf;
+    if (intervals.isNotEmpty) {
+      data['intervals'] = intervals.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+
   bool isInRange(DateTime date) {
     if (intervals.isEmpty) return false;
     for (var i = 0; i < intervals.length; i++) {
@@ -71,45 +116,6 @@ class HabitModel {
     totalFail = totalDays - totalSuccess;
 
     return [totalDays, totalSuccess, totalFail, maxStreak];
-  }
-
-  HabitModel({
-    required this.title,
-    // required this.icon,
-    required this.color,
-    required this.isBad,
-    // required this.quoteToSelf,
-    required this.intervals,
-  }) {
-    sortAndMergeInterval();
-  }
-
-  HabitModel.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    // icon = json['icon'];
-    color = Color(json['color']);
-    isBad = json['isBad'] ?? false;
-    // quoteToSelf = json['quoteToSelf'] ?? '';
-    if (json['intervals'] != null) {
-      intervals = <IntervalModel>[];
-      json['intervals'].forEach((v) {
-        intervals.add(IntervalModel.fromJson(v));
-      });
-    }
-    sortAndMergeInterval();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['title'] = title;
-    // data['icon'] = icon;
-    data['color'] = color.value.toString();
-    data['isBad'] = isBad;
-    // data['quoteToSelf'] = quoteToSelf;
-    if (intervals.isNotEmpty) {
-      data['intervals'] = intervals.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 
   void sortAndMergeInterval() {

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class IntervalModel {
   late DateTime startDate;
   late DateTime endDate;
@@ -13,8 +15,8 @@ class IntervalModel {
   IntervalModel({required this.startDate, required this.endDate});
 
   IntervalModel.fromJson(Map<String, dynamic> json) {
-    startDate = DateTime.parse(json["start_date"]);
-    endDate = DateTime.parse(json["end_date"]);
+    startDate = (json["start_date"] as Timestamp).toDate();
+    endDate = (json["end_date"] as Timestamp).toDate();
   }
 
   toJson() {

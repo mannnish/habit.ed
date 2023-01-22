@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habited/utils/appcolors.dart';
 import 'package:habited/utils/auth.repo.dart';
-import 'package:habited/views/home.dart';
+import 'package:habited/views/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
             onTap: () async {
               try {
                 await AuthRepo.signIn();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
               } catch (e) {
                 // ignore: avoid_print
                 print(e);

@@ -1,35 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habited/models/habit.model.dart';
+import 'package:habited/models/user.model.dart';
 import 'package:habited/utils/appcolors.dart';
+import 'package:habited/views/components/divider.dart';
 import 'package:habited/views/habit_view.dart';
 import 'package:habited/views/user_pane.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:habited/utils/dummy.data.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double horizontalPadding = 15.0;
   double verticalPadding = 15.0;
-  int hoveredIndex = -1;
-  int selectedHabitIndex = -1;
+  String hoveredHabitId = '';
+  String selectedHabitId = '';
   Color selectedBgColor = AppColors.LightGray;
   Color unselectedBgColor = Colors.transparent;
-
-  closeHabitView() {
-    setState(() => selectedHabitIndex = -1);
-  }
-
-  void openDrawer() {
-    _scaffoldKey.currentState?.openDrawer();
-  }
+  CollectionReference userHabitCollection =
+      FirebaseFirestore.instance.collection('users').doc(UserModel.uid).collection('habits');
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +35,6 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           key: _scaffoldKey,
           drawer: const Drawer(child: UserPane(), elevation: 0.0),
-          endDrawer: Drawer(child: HabitView(selectedHabitId: selectedHabitIndex), elevation: 0.0),
           body: ScreenTypeLayout(
             mobile: habitPane(),
             desktop: SizedBox(
@@ -49,7 +44,14 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   const Expanded(child: UserPane(), flex: 2),
                   Expanded(child: habitPane(), flex: 5),
-                  Expanded(child: habitView(), flex: 4),
+                  Expanded(
+                    child: selectedHabitId == ''
+                        ? const SizedBox()
+                        : HabitView(
+                            selectedHabitId: selectedHabitId,
+                          ),
+                    flex: 4,
+                  ),
                 ],
               ),
             ),
@@ -70,12 +72,31 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            headerStyle('All Habits', isAddButton: true),
-            divider(),
-            Column(
-              children: [
-                for (int i = 0; i < DummyData.habits.length; ++i) singleHabit(i),
-              ],
+            headerStyle('All Habits'),
+            const DefaultDivider(),
+            Expanded(
+              child: StreamBuilder(
+                stream: userHabitCollection.snapshots(),
+                builder: (ctx, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data.docs.length == 0) {
+                      return const Center(
+                        child: Text('User found, but no habits'),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.docs[index];
+                        HabitModel habit = HabitModel.fromJson(ds.data() as Map<String, dynamic>);
+                        return singleHabit(habit, ds.id);
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No snapshot data'));
+                  }
+                },
+              ),
             ),
           ],
         ),
@@ -83,28 +104,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget headerStyle(String headerText, {bool isAddButton = false}) {
+  Widget headerStyle(String headerText) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
       child: Row(
         children: [
-          if (isAddButton)
-            ScreenTypeLayout(
-              mobile: InkWell(
-                onTap: () => openDrawer(),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: AppColors.Blue, width: 0.3),
-                  ),
-                  child: const Icon(Icons.menu, color: AppColors.DarkGrayBorder, size: 21),
+          ScreenTypeLayout(
+            mobile: InkWell(
+              onTap: () => _scaffoldKey.currentState?.openDrawer(),
+              child: Container(
+                margin: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: AppColors.Blue, width: 0.3),
                 ),
+                child: const Icon(Icons.menu, color: AppColors.DarkGrayBorder, size: 21),
               ),
-              desktop: const SizedBox(),
             ),
+            desktop: const SizedBox(),
+          ),
           Text(
             headerText,
             style: const TextStyle(
@@ -141,7 +161,6 @@ class _HomePageState extends State<HomePage> {
                                   title = val;
                                 }),
                             const SizedBox(height: 5),
-                            // dropdown for yes or no
                             Row(
                               children: [
                                 const Text('Is Bad Habit?'),
@@ -192,22 +211,22 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () => Navigator.pop(context),
                         ),
                         CupertinoDialogAction(
-                            child: const Text('Add'),
-                            onPressed: () {
-                              if (title.isEmpty) {
-                                return;
-                              }
-                              HabitModel obj = HabitModel(
-                                title: title,
-                                isBad: selectedIsBad == 'Yes',
-                                color: selectedColor,
-                                intervals: [],
-                              );
-                              setState(() {
-                                DummyData.habits.add(obj);
-                              });
-                              Navigator.pop(context);
-                            }),
+                          child: const Text('Add'),
+                          onPressed: () async {
+                            title = title.trim();
+                            if (title.isEmpty) {
+                              return;
+                            }
+                            HabitModel obj = HabitModel(
+                              title: title,
+                              isBad: selectedIsBad == 'Yes',
+                              color: selectedColor,
+                              intervals: [],
+                            );
+                            Navigator.pop(context);
+                            await userHabitCollection.add(obj.toJson());
+                          },
+                        ),
                       ],
                     );
                   });
@@ -218,24 +237,17 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
               decoration: BoxDecoration(
-                color: isAddButton ? AppColors.Blue : Colors.white,
+                color: AppColors.Blue,
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: isAddButton ? AppColors.Blue : AppColors.DarkGrayBorder, width: 0.3),
+                border: Border.all(color: AppColors.Blue, width: 0.3),
               ),
               child: Row(
-                children: [
-                  Icon(
-                    isAddButton ? Icons.add : Icons.highlight_alt_rounded,
-                    color: isAddButton ? Colors.white : AppColors.DarkGrayBorder,
-                    size: 16,
+                children: const [
+                  Icon(Icons.add, color: Colors.white, size: 16),
+                  Text(
+                    ' Add Habit ',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  if (isAddButton)
-                    Text(
-                      ' Add Habit ',
-                      style: TextStyle(
-                        color: isAddButton ? Colors.white : AppColors.DarkGrayBorder,
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -245,20 +257,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Divider divider() {
-    return const Divider(
-      height: 0,
-      color: AppColors.DarkGrayBorder,
-      thickness: 0.3,
-    );
-  }
-
-  Widget habitView() {
-    if (selectedHabitIndex == -1) return Container();
-    return HabitView(selectedHabitId: selectedHabitIndex);
-  }
-
-  Widget singleHabit(int i) {
+  Widget singleHabit(HabitModel habit, String docId) {
     var column = Column(
       children: [
         SizedBox(height: verticalPadding),
@@ -268,7 +267,7 @@ class _HomePageState extends State<HomePage> {
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                color: AppColors.Blue,
+                color: habit.color,
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -277,7 +276,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  DummyData.habits[i].title,
+                  habit.title,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -285,26 +284,31 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Text(
-                  // DummyData.habits[i].quoteToSelf != ""
-                  // ? DummyData.habits[i].quoteToSelf
-                  // :
-                  (DummyData.habits[i].isBad ? "You can quit this habit" : "You can do this habit"),
+                  // habit.quoteToSelf != "" ? habit.quoteToSelf :
+                  (habit.isBad ? "You can quit this habit" : "You can do this habit"),
                   style: const TextStyle(fontSize: 14, color: AppColors.DarkGrayBorder),
                 ),
               ],
             ),
             const Spacer(),
-            if (DummyData.habits[i].currentStreak != 0)
-              Text(DummyData.habits[i].currentStreak.toString(),
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-            if (DummyData.habits[i].currentStreak != 0)
-              const Icon(CupertinoIcons.flame_fill, color: AppColors.Red, size: 18),
+            if (habit.currentStreak != 0)
+              Text(
+                habit.currentStreak.toString(),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+            if (habit.currentStreak != 0)
+              Icon(
+                CupertinoIcons.flame_fill,
+                color: habit.color,
+                size: 18,
+              ),
             const SizedBox(width: 13),
-            (!DummyData.habits[i].doneForToday())
+            (!habit.doneForToday())
                 ? InkWell(
                     onTap: () {
-                      DummyData.habits[i].addDate(DateTime.now());
-                      setState(() {});
+                      // TODO : ADD DATE
+                      habit.addDate(DateTime.now());
+                      userHabitCollection.doc(docId).update(habit.toJson());
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -328,8 +332,9 @@ class _HomePageState extends State<HomePage> {
                   )
                 : InkWell(
                     onTap: () {
-                      DummyData.habits[i].removeInterval(DateTime.now());
-                      setState(() {});
+                      // TODO : REMOVE DATE
+                      habit.removeInterval(DateTime.now());
+                      userHabitCollection.doc(docId).update(habit.toJson());
                     },
                     child: Container(
                       margin: const EdgeInsets.only(left: 7),
@@ -345,36 +350,39 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         SizedBox(height: verticalPadding),
-        Padding(
-          padding: EdgeInsets.only(left: horizontalPadding * 2),
-          child: divider(),
-        ),
+        DefaultDivider(leftPadding: horizontalPadding * 2),
       ],
     );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       decoration: BoxDecoration(
-        color: hoveredIndex == i ? selectedBgColor : unselectedBgColor,
+        color: hoveredHabitId == docId ? selectedBgColor : unselectedBgColor,
       ),
       child: ScreenTypeLayout(
         mobile: InkWell(
           onTap: () async {
-            setState(() => selectedHabitIndex = i);
+            // setState(() => selectedHabitId = docId);
             await Navigator.push(
-                context, MaterialPageRoute(builder: (_) => HabitView(selectedHabitId: selectedHabitIndex)));
-            setState(() {});
+              context,
+              MaterialPageRoute(builder: (_) => HabitView(selectedHabitId: docId)),
+            );
           },
           child: column,
         ),
         desktop: InkWell(
           onTap: () {
-            setState(() => selectedHabitIndex = i);
+            setState(() => selectedHabitId = docId);
+            // print('updating selected habit id to $selectedHabitId');
+            // Navigator.push(
+            //   context,
+            //   CupertinoPageRoute(builder: (_) => HabitView(selectedHabitId: docId)),
+            // );
           },
           onHover: (value) {
             if (value) {
-              setState(() => hoveredIndex = i);
+              setState(() => hoveredHabitId = docId);
             } else {
-              setState(() => hoveredIndex = -1);
+              setState(() => hoveredHabitId = '');
             }
           },
           child: column,
