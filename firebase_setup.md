@@ -75,3 +75,91 @@
         - go to [console.developers.google.com](https://console.developers.google.com/) and Select your project (if you cant see your firebase project, search it in the search bar. __DONT CREATE A NEW PROJECT__).
         - go to __APIs & Services > Credentials > OAuth 2.0 Client IDs > Web client (auto created by firebase) > Authorized JavaScript origins__ and add `http://localhost:59688`
         - if there are multiple entries, then open them all and match the web client id and token with firebase Authentication Google web client id and token
+
+
+### firebase web
+1. `firebase init` and select hosting
+1. What do you want to use as your public directory? build/web
+1. Configure as a single-page app (rewrite all urls to /index.html)? No
+1. Set up automatic builds and deploys with GitHub? No
+1. change title in html file and yaml file
+1. change favicon in web folder, and replace icons files in web/icons folder
+
+---
+1. change version before deploying `flutter_service_worker.js?v=` in index.html
+1. `flutter build web` to build the app
+1. `firebase deploy` to deploy the app
+
+
+### app changing title and icons
+1. Steps to change app name in Android:
+    - Navigate to the android>app> src>main and open the AndroidManifest.xml file. 
+    - Under the application tag, Find the android:label and replace its value with the new app name.
+1. Steps to change app icons in Android:
+    - use this website to generate icons [icon kitchen](https://icon.kitchen/)
+    - hit download after generating icons
+    - create a folder named assets/icons and put your main icon.png in it and other icons in respective folders
+    - in yaml, install `flutter_launcher_icons: ^0.9.2` and add this in yaml
+        ```yaml
+        flutter_icons:
+            android: true
+            ios: true
+            image_path: "assets/icons/icon.png"
+        ```
+    - now run `flutter pub get && flutter pub run flutter_launcher_icons:main` and it will generate icons for you
+    - do `flutter build apk` and verify
+
+
+### Version Control
+ - Change the version in yaml file and in app/build.gradle file
+ - # if mandatory update, then only change in version.code and firebase
+ - Change Version.code class variable (create a class and put the same version code for easy access)
+ - For web, Change the version code in web/index.html file 
+<img src="https://i.stack.imgur.com/5FUZJ.jpg">
+
+
+### SIGNING APP
+ - __GENERATING KEYSTORE__  : copy keystore command to generate keyfile.jks from [here](https://flutter.dev/docs/deployment/android) or use this command `keytool -genkey -v -keystore ~/<appname>-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload`
+ - store the passwords you enter, you will need it later.
+ - <b>KEYSTORE SHAs</b> : now get the keystore SHA keys from Machine, ```keytool -list -v -keystore ~/<appname>-key.jks -alias {alias_name i.e. upload}``` and for password enter keyPassword.
+ - <b>PLAY CONSOLE SHAs </b> : After releasing your app on to the play store, copy the SHA keys from App integrity section
+ - Add these SHA keys in your firebase
+ - --
+ - create a file, android/key.properties and these lines
+ ```
+storePassword=<password from previous step>
+keyPassword=<password from previous step>
+keyAlias=upload // notice from step 3 keyalias is "upload"
+storeFile=<location of the key store file, such as /Users/<user name>/upload-keystore.jks>
+```
+ - In android/app/build.gradle, change your applicationId if you havent already, and for version number change it from .yaml
+ - Add the keystore information from your properties file before the android {} block:
+ ```
+ def keystoreProperties = new Properties()
+   def keystorePropertiesFile = rootProject.file('key.properties')
+   if (keystorePropertiesFile.exists()) {
+       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+        ...
+}
+```
+ - Replace buildTypes block with 
+ ```
+    signingConfigs {
+       release {
+           keyAlias keystoreProperties['keyAlias']
+           keyPassword keystoreProperties['keyPassword']
+           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+           storePassword keystoreProperties['storePassword']
+       }
+   }
+   buildTypes {
+       release {
+           signingConfig signingConfigs.release
+       }
+   }
+```
+ - --
+ - run ```flutter build appbundle```

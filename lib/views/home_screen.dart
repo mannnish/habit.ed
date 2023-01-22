@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   double horizontalPadding = 15.0;
   double verticalPadding = 15.0;
-  String hoveredHabitId = '';
+  // String hoveredHabitId = '';
   String selectedHabitId = '';
   Color selectedBgColor = AppColors.LightGray;
   Color unselectedBgColor = Colors.transparent;
@@ -355,9 +355,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      decoration: BoxDecoration(
-        color: hoveredHabitId == docId ? selectedBgColor : unselectedBgColor,
-      ),
+      color: unselectedBgColor,
+      // decoration: BoxDecoration(
+      // color: hoveredHabitId == docId ? selectedBgColor : unselectedBgColor,
+      // ),
       child: ScreenTypeLayout(
         mobile: InkWell(
           onTap: () async {
@@ -378,13 +379,13 @@ class _HomeScreenState extends State<HomeScreen> {
             //   CupertinoPageRoute(builder: (_) => HabitView(selectedHabitId: docId)),
             // );
           },
-          onHover: (value) {
-            if (value) {
-              setState(() => hoveredHabitId = docId);
-            } else {
-              setState(() => hoveredHabitId = '');
-            }
-          },
+          // onHover: (value) {
+          //   if (value) {
+          //     setState(() => hoveredHabitId = docId);
+          //   } else {
+          //     setState(() => hoveredHabitId = '');
+          //   }
+          // },
           child: column,
         ),
       ),
