@@ -8,15 +8,8 @@
 
 ### Project Screenshots
 
-<div style="width:100%;height:400px;display:flex; flex-direction:row; gap: 20px; justify-content:space-around">
-    <img src="./assets/post-build/1.png">
-    <img src="./assets/post-build/2.png">
-    <img src="./assets/post-build/3.png">
-</div>
-<div style="width:100%;height:400px; display:flex; flex-direction:row; gap: 20px; justify-content:space-around">
-    <img src="./assets/post-build/4.png">
-    <img src="./assets/post-build/5.png">
-</div>
+<img src="./assets/post-build/merge1.png">
+<img src="./assets/post-build/merge2.png">
 <img src="./assets/post-build/Screenshot (5).png">
 <img src="./assets/post-build/Screenshot (6).png">
 
