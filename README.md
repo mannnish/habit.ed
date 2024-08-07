@@ -3,6 +3,9 @@
 - `habit.ed` is a simple app for tracking daily habits built with Flutter and Google OAuth.
 - apk link: [habited.apk](./assets/post-build/habited.apk)
 - web-app link: https://habit-ed.firebaseapp.com/
+- Built a simple app for tracking daily habits using Flutter.
+- Implemented Google OAuth for secure user authentication.
+- Utilized Google Firebase to store data as documents.
 
 ---
 
